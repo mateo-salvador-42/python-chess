@@ -1,31 +1,26 @@
+from rich.console import Console
+from rich.text import Text
+
+console = Console(force_terminal=True, color_system="256")
+
 class Pion():
     def __init__(self):
-        self.name = "Pawn"
-        self.display = ""
+        self.display = "♝"
 
     def return_display(self):
         return self.display
-
 
 class Case():
     def __init__(self, color, state):
         self.color = color
         self.state = state
-        if state:
-            self.change_state(state)
-
-    def change_state(self, pion):
-        self.state = pion
 
     def return_display(self):
-        if self.state:
-            return self.state.display
-        else:
-            if self.color == "black":
-                return "⬛"
-            elif self.color == "white":
-                return "⬜"
-
+        content = f" {self.state.return_display()} " if self.state else "   "
+        bg = "grey23" if self.color == "black" else "grey84"
+        t = Text(content)
+        t.stylize(f"on {bg}")
+        return t
 
 class Ligne():
     def __init__(self, row):
@@ -36,7 +31,7 @@ class Ligne():
     def fill_raw(self):
         if self.row % 2 == 0:
             for i in range(4):
-                self.line.append(Case("white", None))
+                self.line.append(Case("white", Pion()))
                 self.line.append(Case("black", None))
         else:
             for i in range(4):
@@ -44,23 +39,18 @@ class Ligne():
                 self.line.append(Case("white", None))
 
     def display_line(self):
-        result = ""
+        result = Text()
         for case in self.line:
-            result += case.return_display()
+            result.append_text(case.return_display())
         return result
-
 
 class Plateau():
     def __init__(self):
-        self.plateau = []
-        for i in range(8):
-            self.plateau.append(Ligne(i))
+        self.plateau = [Ligne(i) for i in range(8)]
 
     def display_plateau(self):
-        for line in self.plateau:
-            print(line.display_line())
-
+        for ligne in self.plateau:
+            console.print(ligne.display_line())
 
 plateau = Plateau()
-
 plateau.display_plateau()
