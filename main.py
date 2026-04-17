@@ -4,11 +4,20 @@ from abc import ABC
 console = Console(force_terminal=True, color_system="256")
 
 class GameManager():
-    pass
+    def __init__(self):
+        self.PlayerList = []
+        time = input("Duration's Game: ")
+        Player1Name = input("Player's 1 name: ")
+        Player2Name = input("Player's 2 name: ")
+        self.PlayerList.append(Player(Player1Name, time))
+        self.PlayerList.append(Player(Player2Name, time))
 
 
 class Player():
-    pass
+    def __init__(self, name, timer):
+        self.name = name
+        self.timer = timer
+        self.piece = []
 
 class Pawn(ABC):
     def __init__(self, Owner):
@@ -176,8 +185,7 @@ class Board():
             
 
 
-Player1 = Player()
-Player2 = Player()
+Game = GameManager()
 plateau = Board()
-plateau.config_board(Player1, Player2)
+plateau.config_board(Game.PlayerList[0], Game.PlayerList[1])
 plateau.display_plateau()
