@@ -6,13 +6,38 @@ console = Console(force_terminal=True, color_system="256")
 class GameManager():
     def __init__(self):
         self.PlayerList = []
-        time = input("Duration's Game: ")
-        Player1Name = input("Player's 1 name: ")
-        Player2Name = input("Player's 2 name: ")
-        self.PlayerList.append(Player(Player1Name, time))
-        self.PlayerList.append(Player(Player2Name, time))
+        Player1Name = "Player1"
+        Player2Name = "Player2"
+        self.PlayerList.append(Player(Player1Name, 600))
+        self.PlayerList.append(Player(Player2Name, 600))
+        self.tour = self.PlayerList[0]
+        self.board = Board()
+        self.board.config_board(self.PlayerList[0], self.PlayerList[1])
+
+    def parser(self, message):
+        try:
+            coord: str = input(message)
+            if len(coord) != 2:
+                raise TypeError("Bad coords, example formats 'e4'")
+            else:
+                if coord[0].isalpha() and coord[1].isnumeric() :
+                    if (int(coord[1]) > 0 and int(coord[1]) <= 8) and (coord[0] >= "a" and coord[0] <= "h"):
+                        print(self.board.board[int(coord[1]) - 1].line[int(ord(coord[0]) - 97) - 8].state.name)
+                        return self.board.board[int(coord[1]) - 1].line[int(ord(coord[0]) - 97) - 8].state.name
+                    else:
+                        raise TypeError("Bad coords, example formats 'e4'")
+                else:
+                    raise TypeError("Bad coords, example formats 'e4'")
+
+        except TypeError as e:
+            print(e)
+            self.parser(message)
+
+    def play_round(self):
+        pass
 
 
+        
 class Player():
     def __init__(self, name, timer):
         self.name = name
@@ -75,6 +100,7 @@ class BlackPawn(Pawn):
         self.display = "♟"
         self.owner = Owner
         self.color = "black"
+        self.name = "Black Pawn"
 
 class BlackQueen(BlackPawn):
     def __init__(self, Owner):
@@ -182,10 +208,7 @@ class Board():
     def display_plateau(self):
         for lane in self.board:
             console.print(lane.display_line())
-            
-
 
 Game = GameManager()
-plateau = Board()
-plateau.config_board(Game.PlayerList[0], Game.PlayerList[1])
-plateau.display_plateau()
+Game.board.display_plateau()
+Game.parser("Choose a piece to play: ")
